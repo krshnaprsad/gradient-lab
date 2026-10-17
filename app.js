@@ -15,11 +15,13 @@
     'precision highp float;',
     'uniform vec2 uRes;',
     'uniform int uCount;',
-    'uniform vec3 uCols[12];',
-    'uniform vec2 uPts[12];',
+    'uniform vec3 uCols[24];',
+    'uniform vec2 uPts[24];',
     'uniform float uSigma;',
     'uniform float uWarp;',
+    'uniform float uFold;',
     'uniform float uGrain;',
+    'uniform int uNoise;',
     'uniform float uTime;',
     'uniform vec3 uBg;',
     'vec3 permute(vec3 x){ return mod(((x*34.0)+1.0)*x, 289.0); }',
@@ -55,9 +57,15 @@
     '    float n2 = snoise(p * 1.7 + vec2(4.7 - uTime * 0.04, 2.3 + uTime * 0.03));',
     '    sp = p + uWarp * 0.30 * vec2(n1, n2);',
     '  }',
+    '  if (uFold > 0.001) {',
+    '    vec2 q = sp - vec2(0.5);',
+    '    float angle = uFold * 3.3 * exp(-dot(q,q) * 2.0);',
+    '    float cs=cos(angle), sn=sin(angle);',
+    '    sp = vec2(cs*q.x-sn*q.y,sn*q.x+cs*q.y) + vec2(0.5);',
+    '  }',
     '  vec3 acc = lin(uBg) * 0.2;',
     '  float W = 0.2;',
-    '  for (int i = 0; i < 12; i++) {',
+    '  for (int i = 0; i < 24; i++) {',
     '    if (i >= uCount) break;',
     '    float d = distance(sp, uPts[i]);',
     '    float g = exp(-(d * d) / (2.0 * uSigma * uSigma));',
@@ -65,8 +73,15 @@
     '    W += g;',
     '  }',
     '  vec3 col = pow(acc / W, vec3(1.0 / 2.2));',
-    '  float n = fract(sin(dot(gl_FragCoord.xy + mod(uTime, 10.0) * 61.7, vec2(12.9898, 78.233))) * 43758.5453);',
-    '  col += (n - 0.5) * (uGrain + 0.004);',
+    '  float ridge = sp.y - (0.49 + 0.10 * sin(sp.x * 5.0));',
+    '  col *= 1.0 - uFold * 0.27 * exp(-ridge*ridge / 0.0008);',
+    '  col += uFold * 0.07 * exp(-pow(ridge-0.045,2.0) / 0.0015);',
+    '  float scale = uNoise == 2 ? 180.0 : (uNoise == 1 ? 650.0 : 1600.0);',
+    '  vec2 cell = floor(uv * scale);',
+    '  float n = fract(sin(dot(cell, vec2(12.9898,78.233))) * 43758.5453);',
+    '  vec3 grain = vec3(n - 0.5);',
+    '  if (uNoise == 3) grain = vec3(n, fract(sin(dot(cell,vec2(39.34,11.13)))*29734.13), fract(sin(dot(cell,vec2(7.23,49.21)))*39114.91)) - 0.5;',
+    '  col += grain * uGrain;',
     '  gl_FragColor = vec4(col, 1.0);',
     '}'
   ].join('\n');
@@ -94,7 +109,7 @@
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
     var U = {};
-    ['uRes', 'uCount', 'uCols', 'uPts', 'uSigma', 'uWarp', 'uGrain', 'uTime', 'uBg'].forEach(function (n) {
+    ['uRes', 'uCount', 'uCols', 'uPts', 'uSigma', 'uWarp', 'uFold', 'uGrain', 'uNoise', 'uTime', 'uBg'].forEach(function (n) {
       U[n] = gl.getUniformLocation(prog, n);
     });
     return { gl: gl, u: U };
@@ -134,7 +149,7 @@
   function draw(ctx, w, h, aspect, t) {
     var gl = ctx.gl, u = ctx.u;
     gl.viewport(0, 0, w, h);
-    var cols = new Float32Array(36), pts = new Float32Array(24);
+    var cols = new Float32Array(M.MAX_POINTS * 3), pts = new Float32Array(M.MAX_POINTS * 2);
     for (var i = 0; i < state.points.length; i++) {
       var c = hex3(state.points[i].color);
       cols[i * 3] = c[0]; cols[i * 3 + 1] = c[1]; cols[i * 3 + 2] = c[2];
@@ -147,7 +162,9 @@
     gl.uniform2fv(u.uPts, pts);
     gl.uniform1f(u.uSigma, state.sigma);
     gl.uniform1f(u.uWarp, state.warp);
+    gl.uniform1f(u.uFold, state.fold || 0);
     gl.uniform1f(u.uGrain, state.grain);
+    gl.uniform1i(u.uNoise, state.noise || 0);
     gl.uniform1f(u.uTime, t);
     var bg = hex3(state.bg);
     gl.uniform3f(u.uBg, bg[0], bg[1], bg[2]);
@@ -221,7 +238,7 @@
       var col = nextColor;
       var p = M.addPoint(state, M.clamp(q.x, 0, previewAspect), M.clamp(q.y, 0, 1), col);
       if (p) { ptPhase.push([Math.random() * 6.28, Math.random() * 6.28]); syncSelection(); }
-      else say('Twelve blobs is the most this can blend.');
+      else say('Twenty-four blobs is the limit. Select a blob to move or recolour it.');
       setAdding(false);
       return;
     }
@@ -245,6 +262,8 @@
 
   var ptColor = $('ptColor'), delBtn = $('delBtn');
   function syncSelection() {
+    $('pointCount').textContent = state.points.length + ' / ' + M.MAX_POINTS;
+    $('addBtn').disabled = state.points.length >= M.MAX_POINTS;
     var i = state.selected;
     delBtn.disabled = i < 0;
     if (i >= 0) ptColor.value = state.points[i].color;
@@ -288,7 +307,9 @@
   }
   bindRange('sigma', 'sigma', function (v) { return v.toFixed(2); });
   bindRange('warp', 'warp', function (v) { return v.toFixed(2); });
+  bindRange('fold', 'fold', function (v) { return v.toFixed(2); });
   bindRange('grain', 'grain', function (v) { return v.toFixed(3); });
+  $('noiseStyle').addEventListener('change', function () { state.noise = parseInt($('noiseStyle').value, 10); });
   $('anim').addEventListener('change', function () { state.animate = $('anim').checked; });
   $('bgColor').addEventListener('input', function () { state.bg = $('bgColor').value; chips(); });
 
@@ -311,7 +332,13 @@
     b.className = 'preset'; b.type = 'button'; b.title = p.name;
     var stops = p.points.map(function (pt, i) { return pt.color + ' ' + Math.round(pt.u * 100) + '%'; }).join(',');
     b.innerHTML = '<span class="sw" style="background:linear-gradient(105deg,' + p.points.map(function (pt) { return pt.color; }).join(',') + ')"></span><span class="nm">' + p.name + '</span>';
-    b.addEventListener('click', function () { applyPoints(p.bg, p.points); });
+    b.addEventListener('click', function () {
+      state.sigma = p.sigma || 0.22; state.warp = p.warp === undefined ? 0.35 : p.warp;
+      state.fold = p.fold || 0; $('fold').value = state.fold; $('foldVal').textContent = state.fold.toFixed(2);
+      $('sigma').value = state.sigma; $('sigmaVal').textContent = state.sigma.toFixed(2);
+      $('warp').value = state.warp; $('warpVal').textContent = state.warp.toFixed(2);
+      applyPoints(p.bg, p.points);
+    });
     presetBox.appendChild(b);
   });
   $('surprise').addEventListener('click', function () {
