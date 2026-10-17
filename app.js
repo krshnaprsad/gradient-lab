@@ -172,11 +172,21 @@
   }
 
   function resize() {
-    var w = cv.clientWidth || 600;
+    var stage = cv.parentElement;
+    var card = stage.parentElement;
+    var cs = getComputedStyle(card);
+    var available = card.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    // Fit the full image inside the viewport, including tall phone ratios.
+    var maxHeight = Math.max(160, window.innerHeight - (window.innerWidth > 860 ? 270 : 200));
+    var w = Math.min(available, maxHeight * previewAspect);
+    var h = w / previewAspect;
+    stage.style.width = w + 'px';
+    stage.style.marginLeft = stage.style.marginRight = 'auto';
+    cv.style.width = w + 'px';
+    cv.style.height = h + 'px';
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    cv.style.aspectRatio = previewAspect;
     cv.width = Math.round(w * dpr);
-    cv.height = Math.round(w / previewAspect * dpr);
+    cv.height = Math.round(h * dpr);
   }
 
   var lastTs = 0;
