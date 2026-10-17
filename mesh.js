@@ -35,6 +35,9 @@
       bg: '#f3f6fb',
       sigma: 0.22,       // softness of each blob
       fold: 0,
+      foldX: 0.5,        // fold centre, 0..1 left to right
+      foldY: 0.5,        // fold centre, 0..1 top to bottom
+      curl: 0,           // fold style: 0 wave, 1 curl
       warp: 0.35,        // swirl / fold amount
       grain: 0.015,      // film grain
       animate: true
@@ -144,6 +147,14 @@
     {u:0.02,v:0.95,color:'#ed3996'}, {u:0.35,v:0.82,color:'#b94fd0'},
     {u:0.85,v:0.90,color:'#6639ba'}, {u:0.15,v:0.35,color:'#4335ad'},
     {u:0.60,v:0.25,color:'#c2a4eb'}, {u:0.98,v:0.05,color:'#eef0ff'}
+  ]});
+
+  // Silk Curl: the fold engine's curl style winds the bands into a rounded
+  // lobe with a soft, defined crease, like folded silk.
+  PRESETS.push({ id:'curl', name:'Silk Curl', bg:'#c9d6ef', sigma:0.20, warp:0.15, fold:0.9, curl:1, foldX:0.44, foldY:0.48, points:[
+    {u:0.44,v:0.48,color:'#f0a0a0'}, {u:0.80,v:0.30,color:'#a55cc4'},
+    {u:0.95,v:0.10,color:'#b06fd0'}, {u:0.12,v:0.12,color:'#9fbeee'},
+    {u:0.18,v:0.85,color:'#f0e2b4'}, {u:0.85,v:0.88,color:'#eda08e'}
   ]});
 
   var SIZES = [
