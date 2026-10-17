@@ -1,0 +1,10 @@
+{
+  "name": "gradient-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mesh gradient maker. Drag colour points, blend, export wallpaper-size PNGs. Runs fully in the browser.",
+  "scripts": {
+    "test": "node mesh.test.js"
+  },
+  "license": "MIT"
+}
