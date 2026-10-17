@@ -1,7 +1,7 @@
 /* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors mesh.js. */
 (function () {
   'use strict';
-  window.GRADIENT_BUILD = '1.2.3';
+  window.GRADIENT_BUILD = '1.3.0';
   var M = MESH;
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('cv'), hint = $('hint'), msg = $('msg');
@@ -104,6 +104,35 @@
     '    col *= 1.0 - uFold * 0.27 * exp(-ridge*ridge / 0.0008);',
     '    col += uFold * 0.07 * exp(-pow(ridge-0.045,2.0) / 0.0015);',
     '  }',
+    '  if (uCurl == 2) {',
+    '    // Sweep is a pair of open surfaces, not a radial displacement.',
+    '    vec2 q = vec2(uv.x, 1.0-uv.y) - vec2(uFoldC.x/aspect-0.42557, (1.0-uFoldC.y)-0.36798);',
+    '    float dx = q.x-0.42557;',
+    '    float left = min(dx,0.0);',
+    '    float strength = clamp(uFold,0.0,1.0);',
+    '    float bend = mix(0.0,4.8884,strength/0.9);',
+    '    float slope = 0.43549 + (uWarp-0.12)*0.65;',
+    '    float upper = 0.36798 - slope*dx + 5.41704*left*left*strength/0.9;',
+    '    float edge = 0.36798 + bend*left*left + 0.10407*(1.0-exp(-max(dx,0.0)*4.0))*strength/0.9;',
+    '    float soft = max(uSigma/0.24,0.2);',
+    '    float outerBlur = 0.02621*soft*(0.3+1.3*(1.0-exp(-pow(dx/0.22,2.0))));',
+    '    float innerBlur = 0.05519*soft*(0.25+1.2*(1.0-exp(-pow(dx/0.25,2.0))));',
+    '    float outer = 1.0/(1.0+exp(clamp(-(q.y-upper)/outerBlur,-70.0,70.0)));',
+    '    float inner = 1.0/(1.0+exp(clamp(-(q.y-edge)/innerBlur,-70.0,70.0)));',
+    '    vec3 field = uCount>0 ? uCols[0] : uBg;',
+    '    vec3 band = uCount>1 ? uCols[1] : uBg;',
+    '    vec3 lobe = uCount>2 ? uCols[2] : uBg;',
+    '    vec3 glow = uCount>3 ? uCols[3] : uBg;',
+    '    col = mix(mix(field,band,outer),lobe,inner);',
+    '    float yellowMask = (1.0/(1.0+exp(clamp(-(q.y-0.72)/0.12,-70.0,70.0))))*exp(-q.x*q.x/0.018);',
+    '    col = mix(col,glow,yellowMask);',
+    '    // Extra points remain usable as local colour accents over the surface.',
+    '    for (int j=4; j<24; j++) {',
+    '      if (j>=uCount) break;',
+    '      float d=distance(uv,uPts[j]);',
+    '      col=mix(col,uCols[j],0.65*exp(-d*d/(2.0*uSigma*uSigma)));',
+    '    }',
+    '  }',
     '  float scale = uNoise == 2 ? 180.0 : (uNoise == 1 ? 650.0 : 1600.0);',
     '  vec2 cell = floor(uv * scale);',
     '  float n = fract(sin(dot(cell, vec2(12.9898,78.233))) * 43758.5453);',
@@ -192,7 +221,7 @@
     gl.uniform1f(u.uWarp, state.warp);
     gl.uniform1f(u.uFold, state.fold || 0);
     gl.uniform2f(u.uFoldC, (state.foldX === undefined ? 0.5 : state.foldX) * aspect, 1 - (state.foldY === undefined ? 0.5 : state.foldY));
-    gl.uniform1i(u.uCurl, state.curl ? 1 : 0);
+    gl.uniform1i(u.uCurl, state.curl || 0);
     gl.uniform1f(u.uGrain, state.grain);
     gl.uniform1i(u.uNoise, state.noise || 0);
     gl.uniform1f(u.uTime, t);
@@ -348,6 +377,7 @@
   bindRange('sigma', 'sigma', function (v) { return v.toFixed(2); });
   bindRange('warp', 'warp', function (v) { return v.toFixed(2); });
   bindRange('fold', 'fold', function (v) { return v.toFixed(2); });
+  function syncFoldNote() { $('sweepNote').hidden = state.curl !== 2; }
   function wakeFold(to) {
     if (state.fold < 0.05) {
       state.fold = to;
@@ -361,7 +391,8 @@
   $('foldY').addEventListener('input', function () { wakeFold(0.30); });
   $('foldStyle').addEventListener('change', function () {
     state.curl = parseInt($('foldStyle').value, 10);
-    if (state.curl === 1) wakeFold(0.60);
+    if (state.curl > 0) wakeFold(0.60);
+    syncFoldNote();
   });
   bindRange('grain', 'grain', function (v) { return v.toFixed(3); });
   $('noiseStyle').addEventListener('change', function () { state.noise = parseInt($('noiseStyle').value, 10); });
@@ -391,7 +422,7 @@
       state.sigma = p.sigma || 0.22; state.warp = p.warp === undefined ? 0.35 : p.warp;
       state.fold = p.fold || 0; $('fold').value = state.fold; $('foldVal').textContent = state.fold.toFixed(2);
       state.foldX = p.foldX === undefined ? 0.5 : p.foldX; state.foldY = p.foldY === undefined ? 0.5 : p.foldY;
-      state.curl = p.curl || 0; $('foldStyle').value = String(state.curl);
+      state.curl = p.curl || 0; syncFoldNote(); $('foldStyle').value = String(state.curl);
       $('foldX').value = state.foldX; $('foldXVal').textContent = state.foldX.toFixed(2);
       $('foldY').value = state.foldY; $('foldYVal').textContent = state.foldY.toFixed(2);
       $('sigma').value = state.sigma; $('sigmaVal').textContent = state.sigma.toFixed(2);
