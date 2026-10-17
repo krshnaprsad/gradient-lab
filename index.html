@@ -5,25 +5,27 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gradient Lab - mesh gradient maker by Zero3</title>
 <meta name="description" content="Free mesh gradient maker. Drag colour blobs, blend them into soft Apple-style wallpapers, export PNG at phone, desktop, square and poster sizes. Runs in your browser.">
-<link rel="stylesheet" href="app.css?v=1.0.1">
+<link rel="stylesheet" href="app.css?v=1.1.0">
 </head>
 <body>
-<header class="hd"><span class="logo" role="img" aria-label="Zero3 Creatives"></span><div><h1>Gradient Lab</h1><p class="tag">Soft mesh gradients, blended by hand, exported as wallpapers</p></div><span class="ver">v1.0.1</span></header>
+<header class="hd"><span class="logo" role="img" aria-label="Zero3 Creatives"></span><div><h1>Gradient Lab</h1><p class="tag">Soft mesh gradients, blended by hand, exported as wallpapers</p></div><span class="ver">v1.1.0</span></header>
 <main>
   <div class="grid">
     <section class="card">
-      <h2>Blobs</h2>
+      <h2>Blobs <span id="pointCount" style="float:right;color:#aaa;font-size:12px"></span></h2>
       <div class="row">
         <button class="btn" id="addBtn">Add a blob</button>
         <button class="btn" id="delBtn" disabled>Remove selected</button>
         <input type="color" id="ptColor" value="#5eb6f5" aria-label="Blob colour">
       </div>
-      <p class="note">Drag blobs on the canvas. Click one to change its colour. Double-click one to remove it.</p>
+      <p class="note">Up to 24 colour points. Drag blobs on the canvas. Click one to change its colour. Double-click one to remove it.</p>
 
       <h3>Blend</h3>
       <label class="rng">Softness <input type="range" id="sigma" min="0.08" max="0.75" step="0.01" value="0.22"><span id="sigmaVal">0.22</span></label>
       <label class="rng">Swirl <input type="range" id="warp" min="0" max="1" step="0.01" value="0.35"><span id="warpVal">0.35</span></label>
-      <label class="rng">Grain <input type="range" id="grain" min="0" max="0.08" step="0.001" value="0.015"><span id="grainVal">0.015</span></label>
+      <label class="rng">Silk fold <input type="range" id="fold" min="0" max="1" step="0.01" value="0"><span id="foldVal">0.00</span></label>
+      <label>Noise style <select id="noiseStyle"><option value="0">Fine / monochrome</option><option value="1">Film / monochrome</option><option value="2">Coarse / monochrome</option><option value="3">Colour noise</option></select></label>
+      <label class="rng">Noise amount <input type="range" id="grain" min="0" max="0.30" step="0.001" value="0.015"><span id="grainVal">0.015</span></label>
       <label class="chk"><input type="checkbox" id="anim" checked> Animate (blobs drift slowly)</label>
       <label>Background <input type="color" id="bgColor" value="#f3f6fb"></label>
 
@@ -39,7 +41,7 @@
         <div class="hint" id="hint">Click a blob to select it</div>
       </div>
       <div class="row" style="margin-top:12px">
-        <select id="size" aria-label="Export size"></select>
+        <select id="size" aria-label="Canvas shape and export size"></select>
         <button class="btn go" id="dl">Download PNG</button>
       </div>
       <div class="customsz" id="customSz">
@@ -48,12 +50,12 @@
       </div>
       <div class="chips" id="chips"></div>
       <p class="msg" id="msg" hidden></p>
-      <p class="note">The PNG exports at full size, exactly as it looks here. Use phone and poster sizes for wallpaper and print.</p>
+      <p class="note">Choose a shape above. The canvas changes with it, and the PNG keeps that same framing without the control points. Custom size lets you set any ratio.</p>
     </section>
   </div>
   <p class="foot">Everything runs in your browser. Nothing you make is uploaded anywhere. Made by Zero3. <a href="https://github.com/krshnaprsad/gradient-lab" target="_blank" rel="noopener">Source on GitHub</a></p>
 </main>
-<script src="mesh.js?v=1.0.1"></script>
-<script src="app.js?v=1.0.1"></script>
+<script src="mesh.js?v=1.1.0"></script>
+<script src="app.js?v=1.1.0"></script>
 </body>
 </html>
