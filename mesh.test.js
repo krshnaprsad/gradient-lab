@@ -34,7 +34,7 @@ M.PRESETS.forEach(p => {
   ['sigma', 'warp', 'fold', 'foldX', 'foldY'].forEach(k => {
     if (p[k] !== undefined) ok(p[k] >= 0 && p[k] <= 1, p.id + ' ' + k + ' in range');
   });
-  if (p.curl !== undefined) ok(p.curl === 0 || p.curl === 1 || p.curl === 2, p.id + ' curl flag');
+  if (p.curl !== undefined) ok(p.curl === 0 || p.curl === 1 || p.curl === 2 || p.curl === 3, p.id + ' curl flag');
   p.points.forEach(pt => {
     M.hexToRgb(pt.color);
     ok(pt.u >= 0 && pt.u <= 1 && pt.v >= 0 && pt.v <= 1, p.id + ' point inside');
@@ -96,3 +96,5 @@ ok(maxJump < 3, 'blend is smooth, max channel jump ' + maxJump.toFixed(3));
 console.log('ok - ' + n + ' checks passed');
 
 ok(M.PRESETS.find(p=>p.id==='sweep').curl===2, 'Sweep uses surface mode');
+
+ok(M.PRESETS.find(p=>p.id==='flow').curl===3, 'Flow uses layered surface mode');
