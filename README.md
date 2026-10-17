@@ -14,7 +14,7 @@ When it looks right, download a PNG at a real size: phone wallpaper (1290 x 2796
 
 ## More mesh in v1.1 and v1.2
 
-There are now up to 24 colour points, a live point counter, and three denser presets: Aurora Silk (10 points), Rose Ribbon (12), and Lagoon Glass (10). Each sets its own softness and swirl. The original five presets are still there, plus Silk Fold for a soft Apple-wallpaper-inspired fold with a subtle crease, and Silk Curl, which winds the colours into a rounded curl with a soft, defined edge at the centre. Move that curl anywhere with Fold X and Fold Y. These are original gradients, not copies of Apple artwork.
+There are now up to 24 colour points, a live point counter, and three denser presets: Aurora Silk (10 points), Rose Ribbon (12), and Lagoon Glass (10). Each sets its own softness and swirl. The original five presets are still there, plus Silk Fold for a soft Apple-wallpaper-inspired fold with a subtle crease, and Silk Curl, which winds the colours into a rounded curl with a soft, defined edge at the centre. Move that curl anywhere with Fold X and Fold Y. If Silk fold is at 0 the fold controls have nothing to bend, so the app raises it a little for you when you use them. These are original gradients, not copies of Apple artwork.
 
 Noise uses the same normalized texture coordinates in the preview and export, so the texture keeps its scale when the PNG is larger. Set Noise amount to 0 for no grain.
 
