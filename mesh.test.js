@@ -31,11 +31,18 @@ assert.throws(() => M.addPoint(M.createState(), 0, 0, 'oops'), 'addPoint rejects
 M.PRESETS.forEach(p => {
   ok(p.points.length >= M.MIN_POINTS && p.points.length <= M.MAX_POINTS, p.id + ' point count');
   M.hexToRgb(p.bg);
+  ['sigma', 'warp', 'fold', 'foldX', 'foldY'].forEach(k => {
+    if (p[k] !== undefined) ok(p[k] >= 0 && p[k] <= 1, p.id + ' ' + k + ' in range');
+  });
+  if (p.curl !== undefined) ok(p.curl === 0 || p.curl === 1, p.id + ' curl flag');
   p.points.forEach(pt => {
     M.hexToRgb(pt.color);
     ok(pt.u >= 0 && pt.u <= 1 && pt.v >= 0 && pt.v <= 1, p.id + ' point inside');
   });
 });
+ok(M.PRESETS.some(p => p.curl === 1), 'a curl-style preset exists');
+const ds = M.createState();
+ok(ds.foldX === 0.5 && ds.foldY === 0.5 && ds.curl === 0, 'state defaults keep the wave fold centred');
 
 // sizes are sane
 M.SIZES.forEach(sz => {
