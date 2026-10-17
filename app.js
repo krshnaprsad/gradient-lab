@@ -20,6 +20,8 @@
     'uniform float uSigma;',
     'uniform float uWarp;',
     'uniform float uFold;',
+    'uniform vec2 uFoldC;',
+    'uniform int uCurl;',
     'uniform float uGrain;',
     'uniform int uNoise;',
     'uniform float uTime;',
@@ -57,11 +59,28 @@
     '    float n2 = snoise(p * 1.7 + vec2(4.7 - uTime * 0.04, 2.3 + uTime * 0.03));',
     '    sp = p + uWarp * 0.30 * vec2(n1, n2);',
     '  }',
+    '  float cresR = 0.0;',
+    '  float cresA = 0.0;',
+    '  const float CR = 0.28 * min(1.0, aspect);',
     '  if (uFold > 0.001) {',
-    '    vec2 q = sp - vec2(0.5);',
-    '    float angle = uFold * 3.3 * exp(-dot(q,q) * 2.0);',
-    '    float cs=cos(angle), sn=sin(angle);',
-    '    sp = vec2(cs*q.x-sn*q.y,sn*q.x+cs*q.y) + vec2(0.5);',
+    '    if (uCurl == 1) {',
+    '      vec2 hp = vec2(sp.x * aspect, sp.y);',
+    '      vec2 q = hp - uFoldC;',
+    '      float r = length(q);',
+    '      float a0 = atan(q.y, q.x);',
+    '      cresR = r; cresA = a0;',
+    '      float tw = uFold * 8.3 * clamp((CR * 1.6 - r) / (CR * 1.35), 0.0, 1.0);',
+    '      float pinch = uFold * 0.69 * exp(-pow((r - CR) / (0.45 * CR), 2.0));',
+    '      float r2 = r * (1.0 - pinch);',
+    '      vec2 hp2 = uFoldC + r2 * vec2(cos(a0 + tw), sin(a0 + tw));',
+    '      sp = vec2(hp2.x / aspect, hp2.y);',
+    '    } else {',
+    '      vec2 fc = vec2(uFoldC.x / aspect, uFoldC.y);',
+    '      vec2 q = sp - fc;',
+    '      float angle = uFold * 3.3 * exp(-dot(q,q) * 2.0);',
+    '      float cs=cos(angle), sn=sin(angle);',
+    '      sp = vec2(cs*q.x-sn*q.y,sn*q.x+cs*q.y) + fc;',
+    '    }',
     '  }',
     '  vec3 acc = lin(uBg) * 0.2;',
     '  float W = 0.2;',
@@ -73,9 +92,16 @@
     '    W += g;',
     '  }',
     '  vec3 col = pow(acc / W, vec3(1.0 / 2.2));',
-    '  float ridge = sp.y - (0.49 + 0.10 * sin(sp.x * 5.0));',
-    '  col *= 1.0 - uFold * 0.27 * exp(-ridge*ridge / 0.0008);',
-    '  col += uFold * 0.07 * exp(-pow(ridge-0.045,2.0) / 0.0015);',
+    '  if (uCurl == 1 && uFold > 0.001) {',
+    '    float arc = max(0.0, cos(cresA - 2.4));',
+    '    float rr = cresR - CR;',
+    '    col *= 1.0 - uFold * 0.29 * arc * exp(-rr*rr / 0.0006) * (cresR < CR ? 1.0 : 0.3);',
+    '    col += uFold * 0.061 * arc * exp(-pow(rr-0.05,2.0) / 0.0016);',
+    '  } else {',
+    '    float ridge = sp.y - (0.49 + 0.10 * sin(sp.x * 5.0));',
+    '    col *= 1.0 - uFold * 0.27 * exp(-ridge*ridge / 0.0008);',
+    '    col += uFold * 0.07 * exp(-pow(ridge-0.045,2.0) / 0.0015);',
+    '  }',
     '  float scale = uNoise == 2 ? 180.0 : (uNoise == 1 ? 650.0 : 1600.0);',
     '  vec2 cell = floor(uv * scale);',
     '  float n = fract(sin(dot(cell, vec2(12.9898,78.233))) * 43758.5453);',
@@ -109,7 +135,7 @@
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
     var U = {};
-    ['uRes', 'uCount', 'uCols', 'uPts', 'uSigma', 'uWarp', 'uFold', 'uGrain', 'uNoise', 'uTime', 'uBg'].forEach(function (n) {
+    ['uRes', 'uCount', 'uCols', 'uPts', 'uSigma', 'uWarp', 'uFold', 'uFoldC', 'uCurl', 'uGrain', 'uNoise', 'uTime', 'uBg'].forEach(function (n) {
       U[n] = gl.getUniformLocation(prog, n);
     });
     return { gl: gl, u: U };
@@ -163,6 +189,8 @@
     gl.uniform1f(u.uSigma, state.sigma);
     gl.uniform1f(u.uWarp, state.warp);
     gl.uniform1f(u.uFold, state.fold || 0);
+    gl.uniform2f(u.uFoldC, (state.foldX === undefined ? 0.5 : state.foldX) * aspect, 1 - (state.foldY === undefined ? 0.5 : state.foldY));
+    gl.uniform1i(u.uCurl, state.curl ? 1 : 0);
     gl.uniform1f(u.uGrain, state.grain);
     gl.uniform1i(u.uNoise, state.noise || 0);
     gl.uniform1f(u.uTime, t);
@@ -318,6 +346,9 @@
   bindRange('sigma', 'sigma', function (v) { return v.toFixed(2); });
   bindRange('warp', 'warp', function (v) { return v.toFixed(2); });
   bindRange('fold', 'fold', function (v) { return v.toFixed(2); });
+  bindRange('foldX', 'foldX', function (v) { return v.toFixed(2); });
+  bindRange('foldY', 'foldY', function (v) { return v.toFixed(2); });
+  $('foldStyle').addEventListener('change', function () { state.curl = parseInt($('foldStyle').value, 10); });
   bindRange('grain', 'grain', function (v) { return v.toFixed(3); });
   $('noiseStyle').addEventListener('change', function () { state.noise = parseInt($('noiseStyle').value, 10); });
   $('anim').addEventListener('change', function () { state.animate = $('anim').checked; });
@@ -345,6 +376,10 @@
     b.addEventListener('click', function () {
       state.sigma = p.sigma || 0.22; state.warp = p.warp === undefined ? 0.35 : p.warp;
       state.fold = p.fold || 0; $('fold').value = state.fold; $('foldVal').textContent = state.fold.toFixed(2);
+      state.foldX = p.foldX === undefined ? 0.5 : p.foldX; state.foldY = p.foldY === undefined ? 0.5 : p.foldY;
+      state.curl = p.curl || 0; $('foldStyle').value = String(state.curl);
+      $('foldX').value = state.foldX; $('foldXVal').textContent = state.foldX.toFixed(2);
+      $('foldY').value = state.foldY; $('foldYVal').textContent = state.foldY.toFixed(2);
       $('sigma').value = state.sigma; $('sigmaVal').textContent = state.sigma.toFixed(2);
       $('warp').value = state.warp; $('warpVal').textContent = state.warp.toFixed(2);
       applyPoints(p.bg, p.points);
