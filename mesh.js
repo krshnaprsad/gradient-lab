@@ -219,7 +219,7 @@
   }
 
   return {
-    BUILD: '1.4.1', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
+    BUILD: '1.4.2', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
     clamp: clamp, hexToRgb: hexToRgb, rgbToHex: rgbToHex,
     createState: createState, addPoint: addPoint, removePoint: removePoint,
     remapAspect: remapAspect, PRESETS: PRESETS, SIZES: SIZES,
