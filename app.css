@@ -49,3 +49,5 @@ canvas#cv.adding{cursor:copy}
 .kbd{border:1px solid var(--line2);border-radius:5px;padding:0 5px;font-size:12px;color:var(--dim)}
 
 @media(max-width:600px){.hd{padding:20px 12px 8px;gap:10px}.hd h1{font-size:20px}.tag{font-size:12px}main{padding:10px 10px 40px}.card{padding:10px}.grid{gap:12px}}
+
+.grid>.card{min-width:0}.stage{max-width:100%}@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
