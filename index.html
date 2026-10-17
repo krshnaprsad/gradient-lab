@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gradient Lab - mesh gradient maker by Zero3</title>
 <meta name="description" content="Free mesh gradient maker. Drag colour blobs, blend them into soft Apple-style wallpapers, export PNG at phone, desktop, square and poster sizes. Runs in your browser.">
-<link rel="stylesheet" href="app.css?v=1.2.3">
+<link rel="stylesheet" href="app.css?v=1.3.0">
 </head>
 <body>
-<header class="hd"><span class="logo" role="img" aria-label="Zero3 Creatives"></span><div><h1>Gradient Lab</h1><p class="tag">Soft mesh gradients, blended by hand, exported as wallpapers</p></div><span class="ver">v1.2.3</span></header>
+<header class="hd"><span class="logo" role="img" aria-label="Zero3 Creatives"></span><div><h1>Gradient Lab</h1><p class="tag">Soft mesh gradients, blended by hand, exported as wallpapers</p></div><span class="ver">v1.3.0</span></header>
 <main>
   <div class="grid">
     <section class="card">
@@ -24,7 +24,8 @@
       <label class="rng">Softness <input type="range" id="sigma" min="0.08" max="0.75" step="0.01" value="0.22"><span id="sigmaVal">0.22</span></label>
       <label class="rng">Swirl <input type="range" id="warp" min="0" max="1" step="0.01" value="0.35"><span id="warpVal">0.35</span></label>
       <label class="rng">Silk fold <input type="range" id="fold" min="0" max="1" step="0.01" value="0"><span id="foldVal">0.00</span></label>
-      <label>Fold style <select id="foldStyle"><option value="0">Wave</option><option value="1">Curl</option></select></label>
+      <label>Fold style <select id="foldStyle"><option value="0">Wave</option><option value="1">Curl</option><option value="2">Sweep</option></select></label>
+      <p id="sweepNote" class="note" hidden>Sweep uses the first four blob colours as field, band, lobe and corner glow. Fold X/Y moves the tip, Silk fold bends the lobe, Swirl tilts the band and Softness softens its edges. Extra blobs add local colour accents.</p>
       <label class="rng">Fold X <input type="range" id="foldX" min="0" max="1" step="0.01" value="0.5"><span id="foldXVal">0.50</span></label>
       <label class="rng">Fold Y <input type="range" id="foldY" min="0" max="1" step="0.01" value="0.5"><span id="foldYVal">0.50</span></label>
       <label>Noise style <select id="noiseStyle"><option value="0">Fine / monochrome</option><option value="1">Film / monochrome</option><option value="2">Coarse / monochrome</option><option value="3">Colour noise</option></select></label>
@@ -58,18 +59,18 @@
   </div>
   <p class="foot">Everything runs in your browser. Nothing you make is uploaded anywhere. Made by Zero3. <a href="https://github.com/krshnaprsad/gradient-lab" target="_blank" rel="noopener">Source on GitHub</a></p>
 </main>
-<script src="mesh.js?v=1.2.3"></script>
-<script src="app.js?v=1.2.3"></script>
+<script src="mesh.js?v=1.3.0"></script>
+<script src="app.js?v=1.3.0"></script>
 <script>
 (function(){
-  if (!window.MESH || MESH.BUILD !== '1.2.3' || window.GRADIENT_BUILD !== '1.2.3') {
+  if (!window.MESH || MESH.BUILD !== '1.3.0' || window.GRADIENT_BUILD !== '1.3.0') {
     var warning = document.createElement('p');
     warning.setAttribute('role','alert');
     warning.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:16px;background:#fff;color:#111;z-index:99999;text-align:center';
     warning.appendChild(document.createTextNode('An older part of Gradient Lab is cached. '));
     var link = document.createElement('a');
-    link.href = '?v=1.2.3&refresh=' + Date.now();
-    link.textContent = 'Reload the complete v1.2.3 app';
+    link.href = '?v=1.3.0&refresh=' + Date.now();
+    link.textContent = 'Reload the complete v1.3.0 app';
     warning.appendChild(link); document.body.appendChild(warning);
   }
 })();
