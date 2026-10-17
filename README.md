@@ -8,7 +8,7 @@ Made by Zero3.
 
 I wanted a place to play with those soft Apple-style wallpaper colours. This is my take: drag colour blobs, bend the blend and download the result without an account or a watermark.
 
-You get a canvas with colour blobs. Drag them around, click one to change its colour, add more (up to 24), and the colours melt together live. Sliders shape the look: Softness (how far each colour reaches), Swirl (bends the blend into flowing folds), Silk fold (a curved fold with a soft crease), Fold style (Wave, Curl or Sweep), Fold X and Fold Y (move the fold centre), and Noise amount (adds texture, from subtle to heavy). Pick fine, film, coarse monochrome grain or colour noise. There is an Animate switch that lets the blobs drift slowly, eleven presets to start from, and a Surprise me button when you want luck to pick.
+You get a canvas with colour blobs. Drag them around, click one to change its colour, add more (up to 24), and the colours melt together live. Sliders shape the look: Softness (how far each colour reaches), Swirl (bends the blend into flowing folds), Silk fold (a curved fold with a soft crease), Fold style (Wave, Curl, Sweep or Flow), Fold X and Fold Y (move the fold centre), and Noise amount (adds texture, from subtle to heavy). Pick fine, film, coarse monochrome grain or colour noise. There is an Animate switch that lets the blobs drift slowly, twelve presets to start from, and a Surprise me button when you want luck to pick.
 
 When it looks right, download a PNG at a real size: phone wallpaper (1290 x 2796), desktop 4K (3840 x 2160), square post (2048 x 2048), A4 poster for print (2480 x 3508), 16:9, 9:16, 4:3 and 3:2 options, or any custom size up to 8000 px. The canvas itself changes shape with the size you choose. The PNG has no handles or UI.
 
@@ -21,6 +21,10 @@ Noise uses the same normalized texture coordinates in the preview and export, so
 ## Sweep in v1.3
 
 Pastel Sweep uses two open smooth surfaces instead of a radial twirl. A diagonal colour band meets a pointed warm lobe, without a ring or shaded crease. The first four blob colours set the field, band, lobe and corner glow; extra blobs add local colour accents. Fold X/Y moves the tip, Silk fold bends the lobe, Swirl tilts the diagonal and Softness changes the edge softness. Pastel Sweep starts still with no grain. Wave and Curl remain available.
+
+## Flow in v1.4
+
+Chromatic Flow adds broad interlocking blue-violet, magenta and cyan shapes with fine grain and an off-white edge fade. It starts at a 2:1 wide landscape size. Drag the first four colour points to move each layered shape. Fold X/Y moves the composition, Silk fold bends the cyan seam, Swirl tilts the shapes and Softness changes their edges. The new Edge fade slider works on any style and fades into your chosen background. Wave, Curl and Sweep stay available.
 
 ## Use it
 
@@ -41,7 +45,7 @@ Or download the repo and open `index.html`. Nothing to install and nothing leave
 
 The tests (`npm test`, Node 18 or newer, nothing to install) cover the colour maths, the presets, the point limits, the aspect remap, 200 random Surprise me gradients, and the blend itself: it must stay finite and in range everywhere, move toward a blob's colour as you approach it, and change smoothly between neighbouring samples.
 
-I checked the live page in desktop Chrome: dragged a blob, added and removed blobs, opened all eleven presets, changed each slider, and downloaded phone, 4K, square, A4 and custom PNGs. The downloaded files opened at their stated pixel sizes. I also checked the 390 px mobile layout. I have not tested on a real phone or in Safari or Firefox. Device memory and graphics limits can affect very large custom exports.
+I checked the live page in desktop Chrome: dragged a blob, added and removed blobs, opened all twelve presets, changed each slider, and downloaded phone, 4K, square, A4 and custom PNGs. The downloaded files opened at their stated pixel sizes. I also checked the 390 px mobile layout. I have not tested on a real phone or in Safari or Firefox. Device memory and graphics limits can affect very large custom exports.
 
 ## Files
 
