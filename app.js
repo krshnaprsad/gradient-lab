@@ -1,6 +1,7 @@
 /* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors mesh.js. */
 (function () {
   'use strict';
+  window.GRADIENT_BUILD = '1.2.3';
   var M = MESH;
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('cv'), hint = $('hint'), msg = $('msg');
@@ -395,6 +396,8 @@
       $('foldY').value = state.foldY; $('foldYVal').textContent = state.foldY.toFixed(2);
       $('sigma').value = state.sigma; $('sigmaVal').textContent = state.sigma.toFixed(2);
       $('warp').value = state.warp; $('warpVal').textContent = state.warp.toFixed(2);
+      if (p.grain !== undefined) { state.grain = p.grain; $('grain').value = p.grain; $('grainVal').textContent = p.grain.toFixed(3); }
+      if (p.animate !== undefined) { state.animate = p.animate; $('anim').checked = p.animate; }
       applyPoints(p.bg, p.points);
     });
     presetBox.appendChild(b);
