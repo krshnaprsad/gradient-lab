@@ -151,7 +151,7 @@
 
   // Silk Curl: the fold engine's curl style winds the bands into a rounded
   // lobe with a soft, defined crease, like folded silk.
-  PRESETS.push({ id:'curl', name:'Silk Curl', bg:'#b8cff2', sigma:0.24, warp:0.12, fold:0.9, curl:1, foldX:0.44, foldY:0.48, points:[
+  PRESETS.push({ id:'curl', name:'Silk Curl', grain:0, animate:false, bg:'#b8cff2', sigma:0.24, warp:0.12, fold:0.9, curl:1, foldX:0.44, foldY:0.48, points:[
     {u:0.44,v:0.48,color:'#f2a096'}, {u:0.82,v:0.65,color:'#a55cc4'},
     {u:0.98,v:0.92,color:'#b06fd0'}, {u:0.10,v:0.90,color:'#9fc3f2'},
     {u:0.15,v:0.12,color:'#f5e3b0'}, {u:0.88,v:0.15,color:'#f2a896'}
@@ -210,7 +210,7 @@
   }
 
   return {
-    MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
+    BUILD: '1.2.3', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
     clamp: clamp, hexToRgb: hexToRgb, rgbToHex: rgbToHex,
     createState: createState, addPoint: addPoint, removePoint: removePoint,
     remapAspect: remapAspect, PRESETS: PRESETS, SIZES: SIZES,
