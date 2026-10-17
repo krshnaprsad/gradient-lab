@@ -1,4 +1,4 @@
-/* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors src/mesh.js. */
+/* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors mesh.js. */
 (function () {
   'use strict';
   var M = MESH;
@@ -47,7 +47,7 @@
     'void main(){',
     '  vec2 uv = gl_FragCoord.xy / uRes;',
     '  float aspect = uRes.x / uRes.y;',
-    '  vec2 p = vec2(uv.x * aspect, uv.y);',
+    '  vec2 p = vec2(uv.x, uv.y);',
     '  vec2 sp = p;',
     '  if (uWarp > 0.0005) {',
     '    float n1 = snoise(p * 1.7 + vec2(uTime * 0.05, -uTime * 0.035));',
@@ -138,7 +138,7 @@
       var c = hex3(state.points[i].color);
       cols[i * 3] = c[0]; cols[i * 3 + 1] = c[1]; cols[i * 3 + 2] = c[2];
       var ep = effPos(i, t);
-      pts[i * 2] = ep[0]; pts[i * 2 + 1] = 1 - ep[1]; // gl y is bottom-up
+      pts[i * 2] = ep[0] / aspect; pts[i * 2 + 1] = 1 - ep[1]; // gl y is bottom-up
     }
     gl.uniform2f(u.uRes, w, h);
     gl.uniform1i(u.uCount, state.points.length);
@@ -325,6 +325,7 @@
     o.textContent = s.id === 'custom' ? s.label : s.label + ' (' + s.w + ' x ' + s.h + ')';
     sizeSel.appendChild(o);
   });
+  sizeSel.value = 'square';
   function exportSize() {
     var s = M.SIZES.find(function (x) { return x.id === sizeSel.value; });
     if (s.id !== 'custom') return { w: s.w, h: s.h };
@@ -354,6 +355,7 @@
 
   $('dl').addEventListener('click', function () {
     var s = exportSize();
+    var frameTime = simTime;
     say('Rendering ' + s.w + ' x ' + s.h + '...');
     setTimeout(function () {
       try {
@@ -361,15 +363,19 @@
         off.width = s.w; off.height = s.h;
         var ctx2 = makeGL(off);
         if (!ctx2) { say('Could not start the exporter (WebGL).', true); return; }
+        var max = ctx2.gl.getParameter(ctx2.gl.MAX_RENDERBUFFER_SIZE);
+        if (s.w > max || s.h > max) throw new Error('This device supports exports up to ' + max + ' px per side.');
         var oldPts = state.points;
         var expAspect = s.w / s.h;
         try {
           state.points = M.remapAspect(oldPts, previewAspect, expAspect);
-          draw(ctx2, s.w, s.h, expAspect, simTime);
+          draw(ctx2, s.w, s.h, expAspect, frameTime);
         } finally {
           state.points = oldPts;
         }
         off.toBlob(function (blob) {
+          var lose = ctx2.gl.getExtension('WEBGL_lose_context');
+          if (lose) lose.loseContext();
           if (!blob) { say('The export came back empty. Try a smaller size.', true); return; }
           var a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
@@ -394,8 +400,8 @@
       c.innerHTML = '<i style="background:' + it.color + '"></i>' + it.color;
       c.addEventListener('click', function () {
         function done() { say('Copied ' + it.color); }
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(it.color).then(done, done);
-        else done();
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(it.color).then(done, function () { say('Could not copy. The colour is ' + it.color, true); });
+        else say('Copy this colour: ' + it.color);
       });
       box.appendChild(c);
     });
