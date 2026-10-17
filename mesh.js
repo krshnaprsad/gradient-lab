@@ -151,10 +151,10 @@
 
   // Silk Curl: the fold engine's curl style winds the bands into a rounded
   // lobe with a soft, defined crease, like folded silk.
-  PRESETS.push({ id:'curl', name:'Silk Curl', bg:'#c9d6ef', sigma:0.20, warp:0.15, fold:0.9, curl:1, foldX:0.44, foldY:0.48, points:[
-    {u:0.44,v:0.48,color:'#f0a0a0'}, {u:0.80,v:0.30,color:'#a55cc4'},
-    {u:0.95,v:0.10,color:'#b06fd0'}, {u:0.12,v:0.12,color:'#9fbeee'},
-    {u:0.18,v:0.85,color:'#f0e2b4'}, {u:0.85,v:0.88,color:'#eda08e'}
+  PRESETS.push({ id:'curl', name:'Silk Curl', bg:'#b8cff2', sigma:0.30, warp:0.12, fold:0.9, curl:1, foldX:0.44, foldY:0.48, points:[
+    {u:0.44,v:0.48,color:'#f2a096'}, {u:0.82,v:0.65,color:'#a55cc4'},
+    {u:0.98,v:0.92,color:'#b06fd0'}, {u:0.10,v:0.90,color:'#9fc3f2'},
+    {u:0.15,v:0.12,color:'#f5e3b0'}, {u:0.88,v:0.15,color:'#f2a896'}
   ]});
 
   var SIZES = [
