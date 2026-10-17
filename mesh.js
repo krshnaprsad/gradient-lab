@@ -163,7 +163,7 @@
     {u:0.64,v:0.74,color:'#f49e9d'}, {u:0.06,v:0.90,color:'#ffffbe'}
   ]});
 
-  PRESETS.push({id:'flow',name:'Chromatic Flow',bg:'#f5f3f4',sigma:0.22,warp:0.35,fold:0.75,curl:3,foldX:0.5,foldY:0.5,grain:0.045,noise:0,edgeFade:0.0324780,animate:false,size:'wide',points:[{u:0.6380715,v:0.3920880,color:'#f538f4'},{u:0.3944049,v:0.3212260,color:'#00affc'},{u:0.3111714,v:0.7154976,color:'#7500fc'},{u:0.6305219,v:0.7212516,color:'#77fef0'}]});
+  PRESETS.push({id:'flow',name:'Chromatic Flow',bg:'#f7f4f4',sigma:0.22,warp:0.35,fold:0.75,curl:3,foldX:0.5,foldY:0.5,grain:0.045,noise:0,edgeFade:0.04702767,animate:false,size:'wide',points:[{u:0.75,v:0.35,color:'#e91df4'},{u:0.45,v:0.3,color:'#4199f9'},{u:0.26,v:0.75,color:'#9d13fa'},{u:0.65,v:0.72,color:'#4aebee'}]});
 
   var SIZES = [
     {id:'wide',label:'2:1 / Wide landscape',w:2880,h:1440},
@@ -219,7 +219,7 @@
   }
 
   return {
-    BUILD: '1.4.0', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
+    BUILD: '1.4.1', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
     clamp: clamp, hexToRgb: hexToRgb, rgbToHex: rgbToHex,
     createState: createState, addPoint: addPoint, removePoint: removePoint,
     remapAspect: remapAspect, PRESETS: PRESETS, SIZES: SIZES,
