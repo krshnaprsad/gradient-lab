@@ -10,6 +10,7 @@
     'void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }'
   ].join('\n');
 
+  // 2D simplex noise: Ashima Arts, MIT. See NOTICE.md.
   var FRAG = [
     'precision highp float;',
     'uniform vec2 uRes;',
