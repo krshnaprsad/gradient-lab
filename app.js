@@ -61,7 +61,7 @@
     '  }',
     '  float cresR = 0.0;',
     '  float cresA = 0.0;',
-    '  const float CR = 0.28 * min(1.0, aspect);',
+    '  float CR = 0.28 * min(1.0, aspect);',
     '  if (uFold > 0.001) {',
     '    if (uCurl == 1) {',
     '      vec2 hp = vec2(sp.x * aspect, sp.y);',
