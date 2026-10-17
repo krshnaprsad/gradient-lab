@@ -33,7 +33,7 @@
       points: [],        // {x, y, color:'#rrggbb'}
       selected: -1,
       bg: '#f3f6fb',
-      sigma: 0.42,       // softness of each blob
+      sigma: 0.22,       // softness of each blob
       warp: 0.35,        // swirl / fold amount
       grain: 0.015,      // film grain
       animate: true
