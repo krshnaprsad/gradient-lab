@@ -31,7 +31,7 @@ Or download the repo and open `index.html`. Nothing to install and nothing leave
 
 The tests (`npm test`, Node 18 or newer, nothing to install) cover the colour maths, the presets, the point limits, the aspect remap, 200 random Surprise me gradients, and the blend itself: it must stay finite and in range everywhere, move toward a blob's colour as you approach it, and change smoothly between neighbouring samples.
 
-Browser and PNG export checks are in progress. The maths tests alone do not prove every device will render or export correctly.
+I checked the live page in desktop Chrome: dragged a blob, added and removed blobs, opened all five presets, changed each slider, and downloaded phone, 4K, square, A4 and custom PNGs. The downloaded files opened at their stated pixel sizes. I also checked the 390 px mobile layout. I have not tested on a real phone or in Safari or Firefox. Device memory and graphics limits can affect very large custom exports.
 
 ## Files
 
@@ -43,4 +43,4 @@ Developer notes are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence
 
-MIT for the code. The Zero3 name and logo are not part of the licence. See [LICENSE](LICENSE).
+MIT for the code. The swirl uses the MIT-licensed webgl-noise routine; see [NOTICE.md](NOTICE.md). The Zero3 name and logo are not part of the licence. See [LICENSE](LICENSE).
