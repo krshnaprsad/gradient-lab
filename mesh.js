@@ -5,7 +5,7 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  var MAX_POINTS = 12;
+  var MAX_POINTS = 24;
   var MIN_POINTS = 2;
 
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
@@ -34,6 +34,7 @@
       selected: -1,
       bg: '#f3f6fb',
       sigma: 0.22,       // softness of each blob
+      fold: 0,
       warp: 0.35,        // swirl / fold amount
       grain: 0.015,      // film grain
       animate: true
@@ -113,11 +114,46 @@
     }
   ];
 
+  // Denser hand-placed meshes. The old four-blob presets remain available.
+  PRESETS.push(
+    { id: 'aurora', name: 'Aurora Silk', bg: '#03112d', sigma: 0.16, warp: 0.75, points: [
+      {u:0.08,v:0.12,color:'#073b89'},{u:0.42,v:0.10,color:'#3f239f'},
+      {u:0.82,v:0.12,color:'#a931bf'},{u:0.20,v:0.40,color:'#1769d2'},
+      {u:0.55,v:0.32,color:'#28ddd1'},{u:0.92,v:0.45,color:'#154f8b'},
+      {u:0.08,v:0.80,color:'#252284'},{u:0.40,v:0.65,color:'#10baac'},
+      {u:0.70,v:0.76,color:'#42e6be'},{u:0.95,v:0.94,color:'#062e69'}
+    ]},
+    { id: 'ribbon', name: 'Rose Ribbon', bg: '#231047', sigma: 0.13, warp: 0.9, points: [
+      {u:0.10,v:0.08,color:'#281164'},{u:0.44,v:0.10,color:'#7d34bb'},
+      {u:0.82,v:0.08,color:'#f48bb5'},{u:0.12,v:0.40,color:'#8458d8'},
+      {u:0.40,v:0.35,color:'#fa77a6'},{u:0.70,v:0.38,color:'#ffbbb5'},
+      {u:0.95,v:0.40,color:'#a8498c'},{u:0.12,v:0.70,color:'#ee9bd3'},
+      {u:0.40,v:0.65,color:'#feccdb'},{u:0.70,v:0.72,color:'#8b3eaa'},
+      {u:0.25,v:0.95,color:'#7336a4'},{u:0.88,v:0.96,color:'#301659'}
+    ]},
+    { id: 'lagoon', name: 'Lagoon Glass', bg: '#d9f3fa', sigma: 0.14, warp: 0.65, points: [
+      {u:0.10,v:0.12,color:'#68a5e8'},{u:0.50,v:0.08,color:'#c6cdfa'},
+      {u:0.90,v:0.15,color:'#fde4f6'},{u:0.24,v:0.42,color:'#26bfc8'},
+      {u:0.68,v:0.40,color:'#5cb0e6'},{u:0.94,v:0.62,color:'#9d87ed'},
+      {u:0.10,v:0.82,color:'#8ef5c7'},{u:0.43,v:0.72,color:'#50d9c6'},
+      {u:0.65,v:0.95,color:'#a6cafa'},{u:0.90,v:0.92,color:'#ecd4fb'}
+    ]}
+  );
+
+  PRESETS.push({ id:'silk', name:'Silk Fold', bg:'#a79ae9', sigma:0.20, warp:0.12, fold:0.85, points:[
+    {u:0.02,v:0.95,color:'#ed3996'}, {u:0.35,v:0.82,color:'#b94fd0'},
+    {u:0.85,v:0.90,color:'#6639ba'}, {u:0.15,v:0.35,color:'#4335ad'},
+    {u:0.60,v:0.25,color:'#c2a4eb'}, {u:0.98,v:0.05,color:'#eef0ff'}
+  ]});
+
   var SIZES = [
     { id: 'phone', label: 'Phone wallpaper', w: 1290, h: 2796 },
-    { id: 'desktop', label: 'Desktop 4K', w: 3840, h: 2160 },
-    { id: 'square', label: 'Square post', w: 2048, h: 2048 },
+    { id: 'desktop', label: '16:9 / Desktop 4K', w: 3840, h: 2160 },
+    { id: 'square', label: '1:1 / Square post', w: 2048, h: 2048 },
     { id: 'poster', label: 'Poster (A4 print)', w: 2480, h: 3508 },
+    { id:'portrait', label:'9:16 / Portrait', w:1080, h:1920 },
+    { id:'classic', label:'4:3 / Classic', w:2400, h:1800 },
+    { id:'photo', label:'3:2 / Photo', w:3000, h:2000 },
     { id: 'custom', label: 'Custom size', w: 0, h: 0 }
   ];
 
