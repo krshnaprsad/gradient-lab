@@ -157,6 +157,11 @@
     {u:0.15,v:0.12,color:'#f5e3b0'}, {u:0.88,v:0.15,color:'#f2a896'}
   ]});
 
+  PRESETS.push({id:'sweep',name:'Pastel Sweep',bg:'#b7dafa',sigma:0.24,warp:0.12,fold:0.9,curl:2,foldX:0.42557,foldY:0.36798,grain:0,animate:false,points:[
+    {u:0.13,v:0.18,color:'#b7dafa'}, {u:0.80,v:0.32,color:'#9e39e0'},
+    {u:0.64,v:0.74,color:'#f49e9d'}, {u:0.06,v:0.90,color:'#ffffbe'}
+  ]});
+
   var SIZES = [
     { id: 'phone', label: 'Phone wallpaper', w: 1290, h: 2796 },
     { id: 'desktop', label: '16:9 / Desktop 4K', w: 3840, h: 2160 },
@@ -210,7 +215,7 @@
   }
 
   return {
-    BUILD: '1.2.3', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
+    BUILD: '1.3.0', MAX_POINTS: MAX_POINTS, MIN_POINTS: MIN_POINTS,
     clamp: clamp, hexToRgb: hexToRgb, rgbToHex: rgbToHex,
     createState: createState, addPoint: addPoint, removePoint: removePoint,
     remapAspect: remapAspect, PRESETS: PRESETS, SIZES: SIZES,
