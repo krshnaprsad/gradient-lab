@@ -1,7 +1,7 @@
 /* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors mesh.js. */
 (function () {
   'use strict';
-  window.GRADIENT_BUILD = '1.3.0';
+  window.GRADIENT_BUILD = '1.4.0';
   var M = MESH;
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('cv'), hint = $('hint'), msg = $('msg');
@@ -24,6 +24,7 @@
     'uniform vec2 uFoldC;',
     'uniform int uCurl;',
     'uniform float uGrain;',
+    'uniform float uEdgeFade;',
     'uniform int uNoise;',
     'uniform float uTime;',
     'uniform vec3 uBg;',
@@ -50,6 +51,12 @@
     '  return 130.0 * dot(m, g);',
     '}',
     'vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }',
+    'float surface(vec2 q,vec2 centre,vec2 radius,float angle,float softness){',
+    '  vec2 d=q-centre;',
+    '  float c=cos(angle),s=sin(angle);',
+    '  vec2 e=vec2(c*d.x+s*d.y,-s*d.x+c*d.y)/radius;',
+    '  return 1.0/(1.0+exp(clamp((dot(e,e)-1.0)/max(softness,0.02),-70.0,70.0)));',
+    '}',
     'void main(){',
     '  vec2 uv = gl_FragCoord.xy / uRes;',
     '  float aspect = uRes.x / uRes.y;',
@@ -133,12 +140,52 @@
     '      col=mix(col,uCols[j],0.65*exp(-d*d/(2.0*uSigma*uSigma)));',
     '    }',
     '  }',
+    '  if (uCurl == 3) {',
+    '    vec2 q=vec2(uv.x,1.0-uv.y)-vec2(uFoldC.x/aspect-0.5,(1.0-uFoldC.y)-0.5);',
+    '    float tilt=(uWarp-0.35)*0.9;',
+    '    float soft=max(uSigma/0.22,0.15);',
+    '    float bend=(uFold-0.75)*0.3;',
+    '    col=uBg;',
+    '    if (uCount>0) {',
+    '      vec2 centre=vec2(uPts[0].x,1.0-uPts[0].y);',
+    '      centre.y+=0.0;',
+    '      float mask=surface(q,centre,vec2(0.2242135,0.3012847),1.1184767+tilt,0.4413460*soft)*0.9707049;',
+    '      col=mix(col,uCols[0],mask);',
+    '    }',
+    '    if (uCount>1) {',
+    '      vec2 centre=vec2(uPts[1].x,1.0-uPts[1].y);',
+    '      centre.y+=0.0;',
+    '      float mask=surface(q,centre,vec2(0.2498661,0.2629999),0.1828831+tilt,0.3827273*soft)*0.6369170;',
+    '      col=mix(col,uCols[1],mask);',
+    '    }',
+    '    if (uCount>2) {',
+    '      vec2 centre=vec2(uPts[2].x,1.0-uPts[2].y);',
+    '      centre.y+=0.0;',
+    '      float mask=surface(q,centre,vec2(0.1791954,0.1862681),1.2868022+tilt,0.8025294*soft)*1.0000000;',
+    '      col=mix(col,uCols[2],mask);',
+    '    }',
+    '    if (uCount>3) {',
+    '      vec2 centre=vec2(uPts[3].x,1.0-uPts[3].y);',
+    '      centre.y+=bend;',
+    '      float mask=surface(q,centre,vec2(0.2732252,0.1638545),-0.0054186+tilt,0.4315710*soft)*1.0000000;',
+    '      col=mix(col,uCols[3],mask);',
+    '    }',
+    '    for(int j=4;j<24;j++){',
+    '      if(j>=uCount)break;',
+    '      float d=distance(uv,uPts[j]);',
+    '      col=mix(col,uCols[j],0.7*exp(-d*d/(2.0*uSigma*uSigma)));',
+    '    }',
+    '  }',
     '  float scale = uNoise == 2 ? 180.0 : (uNoise == 1 ? 650.0 : 1600.0);',
     '  vec2 cell = floor(uv * scale);',
     '  float n = fract(sin(dot(cell, vec2(12.9898,78.233))) * 43758.5453);',
     '  vec3 grain = vec3(n - 0.5);',
     '  if (uNoise == 3) grain = vec3(n, fract(sin(dot(cell,vec2(39.34,11.13)))*29734.13), fract(sin(dot(cell,vec2(7.23,49.21)))*39114.91)) - 0.5;',
     '  col += grain * uGrain;',
+    '  if (uEdgeFade > 0.0001) {',
+    '    float edge=min(min(uv.x,1.0-uv.x),min(uv.y,1.0-uv.y)*0.65);',
+    '    col=mix(uBg,col,1.0-exp(-max(edge,0.0)/uEdgeFade));',
+    '  }',
     '  gl_FragColor = vec4(col, 1.0);',
     '}'
   ].join('\n');
@@ -166,7 +213,7 @@
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
     var U = {};
-    ['uRes', 'uCount', 'uCols', 'uPts', 'uSigma', 'uWarp', 'uFold', 'uFoldC', 'uCurl', 'uGrain', 'uNoise', 'uTime', 'uBg'].forEach(function (n) {
+    ['uRes', 'uCount', 'uCols', 'uPts', 'uSigma', 'uWarp', 'uFold', 'uFoldC', 'uCurl', 'uGrain', 'uEdgeFade', 'uNoise', 'uTime', 'uBg'].forEach(function (n) {
       U[n] = gl.getUniformLocation(prog, n);
     });
     return { gl: gl, u: U };
@@ -223,6 +270,7 @@
     gl.uniform2f(u.uFoldC, (state.foldX === undefined ? 0.5 : state.foldX) * aspect, 1 - (state.foldY === undefined ? 0.5 : state.foldY));
     gl.uniform1i(u.uCurl, state.curl || 0);
     gl.uniform1f(u.uGrain, state.grain);
+    gl.uniform1f(u.uEdgeFade, state.edgeFade || 0);
     gl.uniform1i(u.uNoise, state.noise || 0);
     gl.uniform1f(u.uTime, t);
     var bg = hex3(state.bg);
@@ -377,7 +425,7 @@
   bindRange('sigma', 'sigma', function (v) { return v.toFixed(2); });
   bindRange('warp', 'warp', function (v) { return v.toFixed(2); });
   bindRange('fold', 'fold', function (v) { return v.toFixed(2); });
-  function syncFoldNote() { $('sweepNote').hidden = state.curl !== 2; }
+  function syncFoldNote() { $('sweepNote').hidden = state.curl !== 2; $('flowNote').hidden = state.curl !== 3; }
   function wakeFold(to) {
     if (state.fold < 0.05) {
       state.fold = to;
@@ -394,6 +442,7 @@
     if (state.curl > 0) wakeFold(0.60);
     syncFoldNote();
   });
+  bindRange('edgeFade', 'edgeFade', function(v){return v.toFixed(3);});
   bindRange('grain', 'grain', function (v) { return v.toFixed(3); });
   $('noiseStyle').addEventListener('change', function () { state.noise = parseInt($('noiseStyle').value, 10); });
   $('anim').addEventListener('change', function () { state.animate = $('anim').checked; });
@@ -427,9 +476,12 @@
       $('foldY').value = state.foldY; $('foldYVal').textContent = state.foldY.toFixed(2);
       $('sigma').value = state.sigma; $('sigmaVal').textContent = state.sigma.toFixed(2);
       $('warp').value = state.warp; $('warpVal').textContent = state.warp.toFixed(2);
+      if (p.noise !== undefined) { state.noise=p.noise; $('noiseStyle').value=String(p.noise); }
       if (p.grain !== undefined) { state.grain = p.grain; $('grain').value = p.grain; $('grainVal').textContent = p.grain.toFixed(3); }
       if (p.animate !== undefined) { state.animate = p.animate; $('anim').checked = p.animate; }
+      state.edgeFade = p.edgeFade || 0; $('edgeFade').value=state.edgeFade; $('edgeFadeVal').textContent=state.edgeFade.toFixed(3);
       applyPoints(p.bg, p.points);
+      if(p.size){sizeSel.value=p.size;var sz=exportSize();setAspect(sz.w,sz.h);$('customSz').classList.toggle('show',p.size==='custom');}
     });
     presetBox.appendChild(b);
   });
