@@ -61,7 +61,7 @@
     '  }',
     '  float cresR = 0.0;',
     '  float cresA = 0.0;',
-    '  float CR = 0.28 * min(1.0, aspect);',
+    '  float CR = 0.32 * min(1.0, aspect);',
     '  if (uFold > 0.001) {',
     '    if (uCurl == 1) {',
     '      vec2 hp = vec2(sp.x * aspect, sp.y);',
@@ -69,8 +69,9 @@
     '      float r = length(q);',
     '      float a0 = atan(q.y, q.x);',
     '      cresR = r; cresA = a0;',
-    '      float tw = uFold * 8.3 * clamp((CR * 1.6 - r) / (CR * 1.35), 0.0, 1.0);',
-    '      float pinch = uFold * 0.69 * exp(-pow((r - CR) / (0.45 * CR), 2.0));',
+    '      float tw = uFold * 4.9 * clamp((CR * 1.7 - r) / (CR * 1.45), 0.0, 1.0);',
+    '      float amod = 0.45 + 0.55 * max(0.0, cos(a0 - 0.6));',
+    '      float pinch = uFold * 0.72 * amod * exp(-pow((r - CR) / (0.5 * CR), 2.0));',
     '      float r2 = r * (1.0 - pinch);',
     '      vec2 hp2 = uFoldC + r2 * vec2(cos(a0 + tw), sin(a0 + tw));',
     '      sp = vec2(hp2.x / aspect, hp2.y);',
@@ -95,8 +96,8 @@
     '  if (uCurl == 1 && uFold > 0.001) {',
     '    float arc = max(0.0, cos(cresA - 2.4));',
     '    float rr = cresR - CR;',
-    '    col *= 1.0 - uFold * 0.29 * arc * exp(-rr*rr / 0.0006) * (cresR < CR ? 1.0 : 0.3);',
-    '    col += uFold * 0.061 * arc * exp(-pow(rr-0.05,2.0) / 0.0016);',
+    '    col *= 1.0 - uFold * 0.056 * arc * exp(-rr*rr / 0.0012) * (cresR < CR ? 1.0 : 0.25);',
+    '    col += uFold * 0.0042 * arc * exp(-pow(rr-0.05,2.0) / 0.0025);',
     '  } else {',
     '    float ridge = sp.y - (0.49 + 0.10 * sin(sp.x * 5.0));',
     '    col *= 1.0 - uFold * 0.27 * exp(-ridge*ridge / 0.0008);',
@@ -346,9 +347,21 @@
   bindRange('sigma', 'sigma', function (v) { return v.toFixed(2); });
   bindRange('warp', 'warp', function (v) { return v.toFixed(2); });
   bindRange('fold', 'fold', function (v) { return v.toFixed(2); });
+  function wakeFold(to) {
+    if (state.fold < 0.05) {
+      state.fold = to;
+      $('fold').value = state.fold; $('foldVal').textContent = state.fold.toFixed(2);
+      say('Silk fold was at 0, raised it so the fold shows.');
+    }
+  }
   bindRange('foldX', 'foldX', function (v) { return v.toFixed(2); });
   bindRange('foldY', 'foldY', function (v) { return v.toFixed(2); });
-  $('foldStyle').addEventListener('change', function () { state.curl = parseInt($('foldStyle').value, 10); });
+  $('foldX').addEventListener('input', function () { wakeFold(0.30); });
+  $('foldY').addEventListener('input', function () { wakeFold(0.30); });
+  $('foldStyle').addEventListener('change', function () {
+    state.curl = parseInt($('foldStyle').value, 10);
+    if (state.curl === 1) wakeFold(0.60);
+  });
   bindRange('grain', 'grain', function (v) { return v.toFixed(3); });
   $('noiseStyle').addEventListener('change', function () { state.noise = parseInt($('noiseStyle').value, 10); });
   $('anim').addEventListener('change', function () { state.animate = $('anim').checked; });
