@@ -22,7 +22,7 @@ Noise uses the same normalized texture coordinates in the preview and export, so
 
 Pastel Sweep uses two open smooth surfaces instead of a radial twirl. A diagonal colour band meets a pointed warm lobe, without a ring or shaded crease. The first four blob colours set the field, band, lobe and corner glow; extra blobs add local colour accents. Fold X/Y moves the tip, Silk fold bends the lobe, Swirl tilts the diagonal and Softness changes the edge softness. Pastel Sweep starts still with no grain. Wave and Curl remain available.
 
-## Flow in v1.4.1
+## Flow in v1.4.2
 
 Chromatic Flow adds broad interlocking blue-violet, magenta and cyan shapes with fine grain and an off-white edge fade. It starts at a 2:1 wide landscape size. The blue and violet points bend the upper and lower halves of one S-shaped body. Magenta and cyan points move the surrounding surfaces. Curved boundaries replace the 1.4.0 stacked-ellipse construction. Fold X/Y moves the composition, Silk fold deepens the cyan cut-in, Swirl tilts the shapes and Softness changes their edges. The new Edge fade slider works on any style and fades into your chosen background. Wave, Curl and Sweep stay available.
 
@@ -58,3 +58,7 @@ Developer notes are in [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Licence
 
 MIT for the code. The swirl uses the MIT-licensed webgl-noise routine; see [NOTICE.md](NOTICE.md). The Zero3 name and logo are not part of the licence. See [LICENSE](LICENSE).
+
+## Colour points in v1.4.2
+
+Every style now keeps each blob colour visible at its position, including surface styles. Moving or recolouring a blob updates that local area instead of allowing a broad surface to hide it.
