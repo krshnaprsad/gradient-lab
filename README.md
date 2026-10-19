@@ -4,6 +4,10 @@ Soft mesh gradients, blended by hand, exported as wallpapers.
 
 Made by Zero3.
 
+## Why I built Gradient Lab
+
+I often need a background in Illustrator or Photoshop, and my client usually has a colour theme. A gradient in that exact theme is hard to find, and what I download from Google rarely feels right. So I built Gradient Lab. I add the colours my client needs, give them effects like a swirl, and download the result. It can even get close to the gradient style Apple uses.
+
 ## What it does
 
 I wanted a place to play with those soft Apple-style wallpaper colours. This is my take: drag colour blobs, bend the blend and download the result without an account or a watermark.
