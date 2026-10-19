@@ -6,5 +6,5 @@
   "scripts": {
     "test": "node mesh.test.js"
   },
-  "license": "MIT"
+  "license": "SEE LICENSE IN LICENSE"
 }
