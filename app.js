@@ -1,7 +1,7 @@
 /* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors mesh.js. */
 (function () {
   'use strict';
-  window.GRADIENT_BUILD = '1.4.2';
+  window.GRADIENT_BUILD = '1.5.0';
   var M = MESH;
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('cv'), hint = $('hint'), msg = $('msg');
@@ -579,6 +579,15 @@
         say('Export failed: ' + err.message, true);
       }
     }, 30);
+  });
+
+  /* ---------- Export to Cube Lab ---------- */
+  $('toCube').addEventListener('click', function () {
+    var seen = {}, list = state.points.slice().sort(function (p, q) { return p.x - q.x; }).map(function (p) { return p.color.replace('#', '').toLowerCase(); }).filter(function (c) { if (seen[c]) return false; seen[c] = 1; return true; }).slice(0, 12);
+    if (list.length < 2) { say('Add at least two different colours first.', true); return; }
+    var url = 'https://krshnaprsad.github.io/cube-lab/#palette=' + list.join('-') + '&from=gradient-lab';
+    var w = window.open(url, '_blank', 'noopener');
+    say(w ? 'Opened Cube Lab with ' + list.length + ' colours.' : 'Your browser blocked the new tab. Allow pop-ups for this page and try again.', !w);
   });
 
   function chips() {
