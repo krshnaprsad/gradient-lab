@@ -64,3 +64,7 @@ The swirl uses a noise routine that is not mine and keeps its own MIT licence, s
 ## Colour points in v1.4.2
 
 Every style now keeps each blob colour visible at its position, including surface styles. Moving or recolouring a blob updates that local area instead of allowing a broad surface to hide it.
+
+## Export to Cube Lab in v1.5.0
+
+There is now an Export to Cube Lab button next to Download PNG. It opens [Cube Lab](https://krshnaprsad.github.io/cube-lab/) in a new tab with your blob colours already loaded in its Palette tab, so you can turn a gradient into a .cube LUT for Premiere Pro or DaVinci Resolve. The colours travel in the link itself, nothing is uploaded. It sends the blob colours from left to right, without the background colour or duplicates, up to 12.
