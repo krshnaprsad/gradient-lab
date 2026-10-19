@@ -1,7 +1,7 @@
 /* Gradient Lab - page code. Rendering is WebGL; the blend maths mirrors mesh.js. */
 (function () {
   'use strict';
-  window.GRADIENT_BUILD = '1.5.0';
+  window.GRADIENT_BUILD = '1.5.1';
   var M = MESH;
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('cv'), hint = $('hint'), msg = $('msg');
