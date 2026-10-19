@@ -2,7 +2,7 @@
 
 Soft mesh gradients, blended by hand, exported as wallpapers.
 
-Made by Zero3.
+Made by [Zero3](https://www.zero3creatives.net/).
 
 ## Why I built Gradient Lab
 
