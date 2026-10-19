@@ -57,7 +57,9 @@ Developer notes are in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence
 
-MIT for the code. The swirl uses the MIT-licensed webgl-noise routine; see [NOTICE.md](NOTICE.md). The Zero3 name and logo are not part of the licence. See [LICENSE](LICENSE).
+I made this and it is free to use, including for paid work. What it is not free to do is be copied: please don't republish, redistribute or sell the code, or build your own version from it. The full terms are in [LICENSE](LICENSE). Versions published before 19 October 2026 were MIT and stay that way. The Zero3 name and logo are not part of the licence.
+
+The swirl uses a noise routine that is not mine and keeps its own MIT licence, see [NOTICE.md](NOTICE.md).
 
 ## Colour points in v1.4.2
 
