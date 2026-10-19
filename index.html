@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gradient Lab - mesh gradient maker by Zero3</title>
 <meta name="description" content="Free mesh gradient maker. Drag colour blobs, blend them into soft Apple-style wallpapers, export PNG at phone, desktop, square and poster sizes. Runs in your browser.">
-<link rel="stylesheet" href="app.css?v=1.4.2">
+<link rel="stylesheet" href="app.css?v=1.5.0">
 </head>
 <body>
-<header class="hd"><span class="logo" role="img" aria-label="Zero3 Creatives"></span><div><h1>Gradient Lab</h1><p class="tag">Soft mesh gradients, blended by hand, exported as wallpapers</p></div><span class="ver">v1.4.2</span></header>
+<header class="hd"><span class="logo" role="img" aria-label="Zero3 Creatives"></span><div><h1>Gradient Lab</h1><p class="tag">Soft mesh gradients, blended by hand, exported as wallpapers</p></div><span class="ver">v1.5.0</span></header>
 <main>
   <div class="grid">
     <section class="card">
@@ -49,6 +49,7 @@
       <div class="row" style="margin-top:12px">
         <select id="size" aria-label="Canvas shape and export size"></select>
         <button class="btn go" id="dl">Download PNG</button>
+        <button class="btn" id="toCube" title="Open Cube Lab with these colours ready to use">Export to Cube Lab</button>
       </div>
       <div class="customsz" id="customSz">
         <input type="number" id="cw" min="100" max="8000" value="1920" aria-label="Width"> x
@@ -61,18 +62,18 @@
   </div>
   <p class="foot">Everything runs in your browser. Nothing you make is uploaded anywhere. Made by Zero3. <a href="https://github.com/krshnaprsad/gradient-lab" target="_blank" rel="noopener">Source on GitHub</a></p>
 </main>
-<script src="mesh.js?v=1.4.2"></script>
-<script src="app.js?v=1.4.2"></script>
+<script src="mesh.js?v=1.5.0"></script>
+<script src="app.js?v=1.5.0"></script>
 <script>
 (function(){
-  if (!window.MESH || MESH.BUILD !== '1.4.2' || window.GRADIENT_BUILD !== '1.4.2') {
+  if (!window.MESH || MESH.BUILD !== '1.5.0' || window.GRADIENT_BUILD !== '1.5.0') {
     var warning = document.createElement('p');
     warning.setAttribute('role','alert');
     warning.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:16px;background:#fff;color:#111;z-index:99999;text-align:center';
     warning.appendChild(document.createTextNode('An older part of Gradient Lab is cached. '));
     var link = document.createElement('a');
-    link.href = '?v=1.4.2&refresh=' + Date.now();
-    link.textContent = 'Reload the complete v1.4.2 app';
+    link.href = '?v=1.5.0&refresh=' + Date.now();
+    link.textContent = 'Reload the complete v1.5.0 app';
     warning.appendChild(link); document.body.appendChild(warning);
   }
 })();
